@@ -1,0 +1,250 @@
+﻿@page "/"
+@using System.Timers
+
+<style>
+	.container {
+		width: 400px;
+	}
+
+	button {
+		width: 100px;
+		height: 100px;
+		font-size: 50px;
+	}
+</style>
+
+<div class="container">
+	<div class="row">
+		@for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
+		{
+			var animal = shuffledAnimals[animalNumber];
+			var uniqueDescription = $"Button #{animalNumber}";
+
+			<div class="col-3">
+				<button @onclick="@(() => ButtonClick(animal, uniqueDescription))"
+						type="button" class="btn btn-outline-dark">
+					<h1>@buttonName</h1>
+				</button>
+			</div>
+		}
+	</div>
+	<div class="row">
+		<h2>Matches found: @matchesFound</h2>
+	</div>
+	<div class="row">
+		<h2>Time: @timeDisplay</h2>
+	</div>
+	<div class="row">
+		<h2>Score: @scoreDisplay</h2>
+	</div>
+</div>
+
+@code {
+
+	// To view details on TASKS A,B & C; scroll down to the end.
+
+
+	List<string> animalEmoji = new List<string>()
+{
+		"🐶", "🐶",
+		"🐺", "🐺",
+		"🐱", "🐱",
+		"🐼", "🐼",
+		"🐹", "🐹",
+		"🐯", "🐯",
+		"🐮", "🐮",
+		"🐻", "🐻",
+	};
+
+	List<string> hiddenEmoji = new List<string>()
+{
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+		" ", " ",
+	};
+
+	List<string> shuffledAnimals = new List<string>();
+
+	protected override void OnInitialized()
+	{
+		timer = new Timer(100);
+		timer.Elapsed += Timer_Tick;
+
+		SetUpGame();
+	}
+
+	private void SetUpGame()
+	{
+
+		Random random = new Random();
+		shuffledAnimals = animalEmoji
+			.OrderBy(item => random.Next())
+			.ToList();
+
+		matchesFound = 0; // reset matches to zero (A)
+
+		tenthOfSecondsElapsed = 0;
+	}
+
+	string lastAnimalFound = string.Empty;
+	string lastDescription = string.Empty;
+	int matchesFound = 0;
+	Timer timer;
+	int tenthOfSecondsElapsed = 0;
+	string timeDisplay;
+	int scoreDisplay = 0; // created to track score of the matches successfully made. (A)
+	string buttonName = string.Empty; // created this variable for the button heading. It is empty by default. (C) 
+
+
+	private void animalDisappear() // a function to make the buttonName disappear. (C)
+	{
+		buttonName = string.Empty;
+		/*shuffledAnimals = shuffledAnimals
+		.Select(a => a.Replace(buttonName, string.Empty))
+		.ToList();*/
+	}
+
+	// before this function is called, the buttonHeading is empty. (C)
+	private void ButtonClick(string animal, string animalDescription)
+	{
+
+
+		if (lastAnimalFound == string.Empty)
+		{
+			buttonName = animal; // this places the animal string in buttonHeading. It makes the animal visible (C)
+			lastAnimalFound = animal;
+			lastDescription = animalDescription;
+
+			timer.Start(); // the timer begins
+
+		}
+		else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+		{
+			buttonName = animal; // Animal remains visible (C) 
+
+			shuffledAnimals = shuffledAnimals
+			.Select(a => a.Replace(animal, string.Empty))
+			.ToList();
+
+			lastAnimalFound = string.Empty;
+
+			matchesFound++;
+			scoreDisplay++; // add to the score by 1 on correct match (A)
+
+			if (matchesFound == 8) // if matches found amount to 8, the timer stops and game is reset.
+			{
+				timer.Stop();
+				timeDisplay += " - Play Again?";
+				SetUpGame();
+			}
+
+		}
+		else
+		{
+			buttonName = animal; // this places the animal string in buttonHeading. It makes the animal visible (C)
+			lastAnimalFound = string.Empty;
+
+			Task.Delay(1000).ContinueWith(t => animalDisappear()); // After 1 second make the buttonName disappear. (C)
+
+			if (animalDescription != lastDescription) // this statement is added to make sure the score does not reduce, if the same button is clicked again.
+			{
+				scoreDisplay--; // reduce the score by 1 for incorrect match (A)
+			}
+		}
+	}
+
+	private void Timer_Tick(Object source, ElapsedEventArgs e)
+	{
+		InvokeAsync(() =>
+		{
+			tenthOfSecondsElapsed++;
+			timeDisplay = (tenthOfSecondsElapsed / 10F)
+				.ToString("0.0s");
+			StateHasChanged();
+		});
+	}
+
+
+	/*****
+	--------------------for TASK A ✅------------------------------------------- 
+	Change the game so that the player scores 1 point for every correct match and loses 1 point for every wrong match
+
+	1) Add a integer scoreDisplay variable with initial value of 0. ✅
+	2) Add scoreDisplay ++ when lastAnimalFound == animal ✅
+	3) Add scoreDisplay -- when lastAnimalFound != animal ✅
+	3) Also make sure clicking on the same button does not decrease scoreDisplay. Add an if statement so 
+	that score decreases only when animalDescription != lastDescription. ✅
+	4) Display this in html and add @scoreDisplay. ✅
+
+	BUG
+	When the player gets something wrong, the button they last clicked on does not get unselected. 
+	So people may mess this up.
+
+	- In HTML, unselect button after lastAnimalFound != animal.
+	- Make it +10 points for one correct match.
+	- Make it -2 points for one incorrect match. 
+
+	*****/
+
+
+
+	/*****
+	----------------------for TASK B-----------------------------------------
+	Give multiple options of animals so the player can choose upto 8 animals to use
+	in the game.
+
+	1) Create a list called animalEmojiDatabase that contains 20 animals or more.
+	2) Make each animal a button.
+	3) On click, the animal gets highlighted and is selected.
+	4) When 8 animals emojis have been clicked on and selected, the player cannot click on more.
+	5) Click on a Selected animal emoji to Unselect it. 
+	6) On clicking GO, setUpGame() is called.
+	7) All selected animals emojis from animalEmojiDatabase are pushed twice each into the animalEmoji list.
+
+	--------POSSIBLE CODE:-------------
+	string[,] animalDatabase = new string[,] // this creates a 2D array with all 16 animal choices (B)
+	{ 
+		{ "🐶", "🐶" },{ "🐺", "🐺" }, 
+		{ "🐱", "🐱" },{ "🐼", "🐼" }, 
+		{ "🐻", "🐻" },{ "🐮", "🐮" },
+		{ "🐯", "🐯" },{ "🐹", "🐹" },
+		{ "🐷", "🐷" },{ "🦊", "🦊" },
+		{ "🐗", "🐗" },{ "🦝", "🦝" },
+		{ "🦎", "🦎" },{ "🐠", "🐠" },
+		{ "🐰", "🐰" },{ "🦄", "🦄" }
+	};
+
+	List<string> animalEmoji = string.Empty; // create an empty List (B)
+
+	// Push the selected 8 animals from the animalDatabase into the animalEmoji list. (B)
+	But this needs to be PUSHED in a way that it is converted into a 1D Array/List.
+
+	******/
+
+
+
+	/******
+	------------------------- For TASK C ✅---------------------------------
+	Memory Game: The buttons begin empty. On click button is visible and remains open until the next one is checked. 
+	If the next button matches, both buttons should stay open (and maybe turn green/black).
+	If next button is incorrect, both buttons become invisible in one second.
+
+	1) Make a variable for button name ✅
+	2) Variable starts as an empty string ✅
+	3) In the button click function, the animal is placed in the variable. ✅ bug
+	4) After a delay of 1 second, call a function that makes the variable empty again ✅ bug
+	4) If lastAnimalFound == animal, then the variable stays visible. 
+	5) If lastAnimalFound != animal, then the variable goes back to empty. ✅
+
+	BUGS:
+	On click, all buttons display the clicked button's animal.
+
+	*******/
+
+}
+
