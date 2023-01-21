@@ -98,7 +98,7 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 44 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
+#line 56 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
        
 
 	// To view details on TASKS A,B & C; scroll down to the end.
@@ -118,14 +118,14 @@ using System.Timers;
 
 	List<string> hiddenEmoji = new List<string>()
 {
-		"?", "?",
-		"?", "?",
-		"?", "?",
-		"?", "?",
-		"?", "?",
-		"?", "?",
-		"?", "?",
-		"?", "?"
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔",
+		"❔", "❔"
 	};
 
 	List<string> shuffledAnimals = new List<string>();
@@ -149,21 +149,35 @@ using System.Timers;
 		matchesFound = 0; // reset matches to zero (A)
 
 		tenthOfSecondsElapsed = 0;
-
-		for(int buttonIndex = 0; buttonIndex < hiddenEmoji.Count; buttonIndex++)
-		{
-			hiddenEmoji[buttonIndex] = "?";
-		}
 	}
 
 	string lastAnimalFound = string.Empty;
 	string lastDescription = string.Empty;
-	int lastButtonIndex = -1;
+	int lastButtonIndex;
 	int matchesFound = 0;
 	Timer timer;
 	int tenthOfSecondsElapsed = 0;
 	string timeDisplay;
 	int scoreDisplay = 0; // created to track score of the matches successfully made. (A)
+
+	// if lastAnimalFound is " ", then buttonIndex is animal.
+	// if matchIsSucces, then lastButtonIndex and buttonIndex is " "
+	// if false, then lastButtonIndex and buttonIndex is "?"
+
+	private void hideAnimalsAgain(int buttonIndex, int lastButtonIndex)
+	{
+		hiddenEmoji[buttonIndex] = "❔";
+		hiddenEmoji[lastButtonIndex] = "❔";
+	}
+
+	private void removeAnimals(int buttonIndex, int lastButtonIndex) {
+
+		shuffledAnimals[buttonIndex] = string.Empty;
+		shuffledAnimals[lastButtonIndex] = string.Empty;
+
+		hiddenEmoji[buttonIndex] = string.Empty;
+		hiddenEmoji[lastButtonIndex] = string.Empty;
+	}
 
 	// before this function is called, the buttonHeading is empty. (C)
 	private void ButtonClick(string animal, string animalDescription, int buttonIndex)
@@ -171,9 +185,7 @@ using System.Timers;
 
 		if (lastAnimalFound == string.Empty) // first click
 		{
-			hiddenEmoji = hiddenEmoji
-			.Select(a => a.Replace(hiddenEmoji[buttonIndex], animal))
-			.ToList();
+			hiddenEmoji[buttonIndex] = animal;
 
 			lastAnimalFound = animal;
 			lastDescription = animalDescription;
@@ -184,23 +196,14 @@ using System.Timers;
 		}
 		else if ((lastAnimalFound == animal) && (animalDescription != lastDescription)) // if second click and it matches the first
 		{
-
-			shuffledAnimals = shuffledAnimals
-			.Select(a => a.Replace(animal, string.Empty))
-			.ToList();
-
-			hiddenEmoji = hiddenEmoji
-			.Select(a => a.Replace(hiddenEmoji[buttonIndex], string.Empty))
-			.ToList();
-
-			hiddenEmoji = hiddenEmoji
-			.Select(a => a.Replace(hiddenEmoji[lastButtonIndex], string.Empty))
-			.ToList();
+			hiddenEmoji[buttonIndex] = animal;
+			Task.Delay(1000).ContinueWith(t => removeAnimals(buttonIndex, lastButtonIndex)); // After 1 second make the buttonName disappear. (C)
 
 			lastAnimalFound = string.Empty;
+			//lastButtonIndex = -1;
 
 			matchesFound++;
-			scoreDisplay++; // add to the score by 1 on correct match (A)
+			scoreDisplay = scoreDisplay + 10; // add to the score by 1 on correct match (A)
 
 			if (matchesFound == 8) // if matches found amount to 8, the timer stops and game is reset.
 			{
@@ -212,22 +215,15 @@ using System.Timers;
 		}
 		else
 		{
-			hiddenEmoji = hiddenEmoji
-			.Select(a => a.Replace(hiddenEmoji[buttonIndex], "?"))
-			.ToList();
-
-			hiddenEmoji = hiddenEmoji
-				.Select(a => a.Replace(hiddenEmoji[lastButtonIndex], "?"))
-				.ToList();
+			hiddenEmoji[buttonIndex] = animal;
+			Task.Delay(1000).ContinueWith(t => hideAnimalsAgain(buttonIndex, lastButtonIndex)); // After 1 second make the buttonName disappear. (C)
 
 			lastAnimalFound = string.Empty;
-			lastButtonIndex = -1;
-
-			//Task.Delay(1000).ContinueWith(t => animalHidden()); // After 1 second make the buttonName disappear. (C)
+			//lastButtonIndex = -1;
 
 			if (animalDescription != lastDescription) // this statement is added to make sure the score does not reduce, if the same button is clicked again.
 			{
-				scoreDisplay--; // reduce the score by 1 for incorrect match (A)
+				scoreDisplay = scoreDisplay -2; // reduce the score by 1 for incorrect match (A)
 			}
 		}
 	}
@@ -291,8 +287,8 @@ using System.Timers;
 		{ "🐗", "🐗" },{ "🦝", "🦝" },
 		{ "🦎", "🦎" },{ "🐠", "🐠" },
 		{ "🐰", "🐰" },{ "🦄"
-		 
-		 
+
+
 		 , "🦄" }
 	};
 
