@@ -113,7 +113,7 @@ using System.Timers;
 		"🐹", "🐹",
 		"🐯", "🐯",
 		"🐮", "🐮",
-		"🐻", "🐻"
+		"🐻", "🐻",
 	};
 
 	List<string> hiddenEmoji = new List<string>()
@@ -150,9 +150,9 @@ using System.Timers;
 
 		tenthOfSecondsElapsed = 0;
 
-		for(int index = 0; index < hiddenEmoji.Count; index++)
+		for(int buttonIndex = 0; buttonIndex < hiddenEmoji.Count; buttonIndex++)
 		{
-			hiddenEmoji[index] = "?";
+			hiddenEmoji[buttonIndex] = "?";
 		}
 	}
 
