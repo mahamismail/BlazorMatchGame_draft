@@ -98,23 +98,52 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 52 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
+#line 73 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
        
 
-	// To view details on TASKS A,B & C; scroll down to the end.
-
-
-	List<string> animalEmoji = new List<string>()
-{
-		"🐶", "🐶",
-		"🐺", "🐺",
-		"🐱", "🐱",
-		"🐼", "🐼",
-		"🐹", "🐹",
-		"🐯", "🐯",
-		"🐮", "🐮",
-		"🐻", "🐻",
+	List<string> animalDatabase = new List<string>()
+	{
+		"🐶", "🐺",
+		"🐱", "🐼",
+		"🐻", "🐮",
+		"🐯", "🐹",
+		"🐷", "🦊",
+		"🐗", "🦝",
+		"🦎", "🐠",
+		"🐰", "🦄"
 	};
+
+	List<string> animalEmoji = new List<string>();
+
+	private void pushAnimalToList(string animalToAdd)
+	{
+		if (animalEmoji.Count < 16)
+		{
+			animalEmoji.Add(animalToAdd);
+			animalEmoji.Add(animalToAdd);
+		}
+
+	}
+
+	protected override void OnInitialized()
+	{
+		timer = new Timer(100);
+		timer.Elapsed += Timer_Tick;
+	}
+
+	/*	List<string> animalEmoji = new List<string>()
+	{
+			"🐶", "🐶",
+			"🐺", "🐺",
+			"🐱", "🐱",
+			"🐼", "🐼",
+			"🐹", "🐹",
+			"🐯", "🐯",
+			"🐮", "🐮",
+			"🐻", "🐻",
+		};*/
+
+	List<string> shuffledAnimals = new List<string>();
 
 	List<string> hiddenEmoji = new List<string>()
 {
@@ -127,16 +156,6 @@ using System.Timers;
 		"❔", "❔",
 		"❔", "❔"
 	};
-
-	List<string> shuffledAnimals = new List<string>();
-
-	protected override void OnInitialized()
-	{
-		timer = new Timer(100);
-		timer.Elapsed += Timer_Tick;
-
-		SetUpGame();
-	}
 
 	private void SetUpGame()
 	{
@@ -291,10 +310,7 @@ using System.Timers;
 		{ "🐷", "🐷" },{ "🦊", "🦊" },
 		{ "🐗", "🐗" },{ "🦝", "🦝" },
 		{ "🦎", "🦎" },{ "🐠", "🐠" },
-		{ "🐰", "🐰" },{ "🦄"
-
-
-		 , "🦄" }
+		{ "🐰", "🐰" },{ "🦄", "🦄" }
 	};
 
 	List<string> animalEmoji = string.Empty; // create an empty List (B)

@@ -18,6 +18,27 @@
 
 <div class="container">
 	<div class="row">
+		<h2>Choose 8 animals:</h2>
+	</div>
+	<div class="row">
+		@for (var allAnim = 0; allAnim < animalDatabase.Count; allAnim++)
+		{
+			var uniqueAnimalsToAdd = animalDatabase[allAnim];
+			<div class="col-3">
+				<button @onclick="@(() => pushAnimalToList(uniqueAnimalsToAdd))"
+						type="button" class="btn">
+					<h1>@animalDatabase[allAnim]</h1>
+				</button>
+			</div>
+		}
+	</div>
+	<div class="row">
+		<button @onclick="@(() => SetUpGame())"
+				type="button" class="btn btn-success">
+			<h1>Play</h1>
+		</button>
+	</div>
+	<div class="row">
 		<h2>Time:@timeDisplay</h2>
 	</div>
 	<div class="row">
@@ -51,20 +72,37 @@
 
 @code {
 
-	// To view details on TASKS A,B & C; scroll down to the end.
-
-
-	List<string> animalEmoji = new List<string>()
-{
-		"🐶", "🐶",
-		"🐺", "🐺",
-		"🐱", "🐱",
-		"🐼", "🐼",
-		"🐹", "🐹",
-		"🐯", "🐯",
-		"🐮", "🐮",
-		"🐻", "🐻",
+	List<string> animalDatabase = new List<string>()
+	{
+		"🐶", "🐺",
+		"🐱", "🐼",
+		"🐻", "🐮",
+		"🐯", "🐹",
+		"🐷", "🦊",
+		"🐗", "🦝",
+		"🦎", "🐠",
+		"🐰", "🦄"
 	};
+
+	List<string> animalEmoji = new List<string>();
+
+	private void pushAnimalToList(string animalToAdd)
+	{
+		if (animalEmoji.Count < 16)
+		{
+			animalEmoji.Add(animalToAdd);
+			animalEmoji.Add(animalToAdd);
+		}
+
+	}
+
+	protected override void OnInitialized()
+	{
+		timer = new Timer(100);
+		timer.Elapsed += Timer_Tick;
+	}
+
+	List<string> shuffledAnimals = new List<string>();
 
 	List<string> hiddenEmoji = new List<string>()
 {
@@ -77,16 +115,6 @@
 		"❔", "❔",
 		"❔", "❔"
 	};
-
-	List<string> shuffledAnimals = new List<string>();
-
-	protected override void OnInitialized()
-	{
-		timer = new Timer(100);
-		timer.Elapsed += Timer_Tick;
-
-		SetUpGame();
-	}
 
 	private void SetUpGame()
 	{
@@ -241,10 +269,7 @@
 		{ "🐷", "🐷" },{ "🦊", "🦊" },
 		{ "🐗", "🐗" },{ "🦝", "🦝" },
 		{ "🦎", "🦎" },{ "🐠", "🐠" },
-		{ "🐰", "🐰" },{ "🦄"
-
-
-		 , "🦄" }
+		{ "🐰", "🐰" },{ "🦄", "🦄" }
 	};
 
 	List<string> animalEmoji = string.Empty; // create an empty List (B)
