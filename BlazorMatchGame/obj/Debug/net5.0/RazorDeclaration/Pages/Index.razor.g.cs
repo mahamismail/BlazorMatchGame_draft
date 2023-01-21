@@ -98,7 +98,7 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 56 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
+#line 52 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
        
 
 	// To view details on TASKS A,B & C; scroll down to the end.
@@ -149,6 +149,11 @@ using System.Timers;
 		matchesFound = 0; // reset matches to zero (A)
 
 		tenthOfSecondsElapsed = 0;
+
+		for (var i = 0; i < hiddenEmoji.Count; i++)
+		{
+			hiddenEmoji[i] = "❔";
+		}
 	}
 
 	string lastAnimalFound = string.Empty;
@@ -307,7 +312,7 @@ using System.Timers;
 	If the next button matches, both buttons should stay open (and maybe turn green/black).
 	If next button is incorrect, both buttons become invisible in one second.
 
-	1) Make a variable for button name ✅
+	1) Make variables for button index to look through hidden list and animal list ✅
 	2) Variable starts as an empty string ✅
 	3) In the button click function, the animal is placed in the variable. ✅ bug
 	4) After a delay of 1 second, call a function that makes the variable empty again ✅ bug

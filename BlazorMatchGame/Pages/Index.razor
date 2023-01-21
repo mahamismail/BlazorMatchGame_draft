@@ -18,12 +18,14 @@
 
 <div class="container">
 	<div class="row">
+		<h2>Time:@timeDisplay</h2>
+	</div>
+	<div class="row">
 		@for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
 		{
 			var animal = shuffledAnimals[animalNumber];
 			var uniqueDescription = $"Button #{animalNumber}";
 			var uniqueButtonIndex = animalNumber;
-			var hiddenAnimal = hiddenEmoji[uniqueButtonIndex];
 
 			<div class="col-3">
 				<button @onclick="@(() => ButtonClick(animal, uniqueDescription, uniqueButtonIndex))"
@@ -37,15 +39,12 @@
 		<h2>Matches found: @matchesFound</h2>
 	</div>
 	<div class="row">
-		<h2>Time: @timeDisplay</h2>
-	</div>
-	<div class="row">
 		<h2>Score: @scoreDisplay</h2>
 	</div>
-	<div class="col-3">
+	<div class="row">
 		<button @onclick="@(() => SetUpGame())"
 				type="button" class="btn btn-success">
-			<h1>Play Again</h1>
+			<h1>Reset Game</h1>
 		</button>
 	</div>
 </div>
@@ -100,6 +99,11 @@
 		matchesFound = 0; // reset matches to zero (A)
 
 		tenthOfSecondsElapsed = 0;
+
+		for (var i = 0; i < hiddenEmoji.Count; i++)
+		{
+			hiddenEmoji[i] = "❔";
+		}
 	}
 
 	string lastAnimalFound = string.Empty;
@@ -258,7 +262,7 @@
 	If the next button matches, both buttons should stay open (and maybe turn green/black).
 	If next button is incorrect, both buttons become invisible in one second.
 
-	1) Make a variable for button name ✅
+	1) Make variables for button index to look through hidden list and animal list ✅
 	2) Variable starts as an empty string ✅
 	3) In the button click function, the animal is placed in the variable. ✅ bug
 	4) After a delay of 1 second, call a function that makes the variable empty again ✅ bug
