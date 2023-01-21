@@ -98,7 +98,7 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 42 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
+#line 44 "D:\NEU\Intermediate Programming\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
        
 
 	// To view details on TASKS A,B & C; scroll down to the end.
@@ -113,19 +113,19 @@ using System.Timers;
 		"🐹", "🐹",
 		"🐯", "🐯",
 		"🐮", "🐮",
-		"🐻", "🐻",
+		"🐻", "🐻"
 	};
 
 	List<string> hiddenEmoji = new List<string>()
 {
-		" ", " ",
-		" ", " ",
-		" ", " ",
-		" ", " ",
-		" ", " ",
-		" ", " ",
-		" ", " ",
-		" ", " ",
+		"?", "?",
+		"?", "?",
+		"?", "?",
+		"?", "?",
+		"?", "?",
+		"?", "?",
+		"?", "?",
+		"?", "?"
 	};
 
 	List<string> shuffledAnimals = new List<string>();
@@ -149,46 +149,52 @@ using System.Timers;
 		matchesFound = 0; // reset matches to zero (A)
 
 		tenthOfSecondsElapsed = 0;
+
+		for(int index = 0; index < hiddenEmoji.Count; index++)
+		{
+			hiddenEmoji[index] = "?";
+		}
 	}
 
 	string lastAnimalFound = string.Empty;
 	string lastDescription = string.Empty;
+	int lastButtonIndex = -1;
 	int matchesFound = 0;
 	Timer timer;
 	int tenthOfSecondsElapsed = 0;
 	string timeDisplay;
 	int scoreDisplay = 0; // created to track score of the matches successfully made. (A)
-	string buttonName = string.Empty; // created this variable for the button heading. It is empty by default. (C) 
-
-
-	private void animalDisappear() // a function to make the buttonName disappear. (C)
-	{
-		buttonName = string.Empty;
-		/*shuffledAnimals = shuffledAnimals
-		.Select(a => a.Replace(buttonName, string.Empty))
-		.ToList();*/
-	}
 
 	// before this function is called, the buttonHeading is empty. (C)
-	private void ButtonClick(string animal, string animalDescription)
+	private void ButtonClick(string animal, string animalDescription, int buttonIndex)
 	{
 
-
-		if (lastAnimalFound == string.Empty)
+		if (lastAnimalFound == string.Empty) // first click
 		{
-			buttonName = animal; // this places the animal string in buttonHeading. It makes the animal visible (C)
+			hiddenEmoji = hiddenEmoji
+			.Select(a => a.Replace(hiddenEmoji[buttonIndex], animal))
+			.ToList();
+
 			lastAnimalFound = animal;
 			lastDescription = animalDescription;
+			lastButtonIndex = buttonIndex;
 
 			timer.Start(); // the timer begins
 
 		}
-		else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+		else if ((lastAnimalFound == animal) && (animalDescription != lastDescription)) // if second click and it matches the first
 		{
-			buttonName = animal; // Animal remains visible (C) 
 
 			shuffledAnimals = shuffledAnimals
 			.Select(a => a.Replace(animal, string.Empty))
+			.ToList();
+
+			hiddenEmoji = hiddenEmoji
+			.Select(a => a.Replace(hiddenEmoji[buttonIndex], string.Empty))
+			.ToList();
+
+			hiddenEmoji = hiddenEmoji
+			.Select(a => a.Replace(hiddenEmoji[lastButtonIndex], string.Empty))
 			.ToList();
 
 			lastAnimalFound = string.Empty;
@@ -206,10 +212,18 @@ using System.Timers;
 		}
 		else
 		{
-			buttonName = animal; // this places the animal string in buttonHeading. It makes the animal visible (C)
-			lastAnimalFound = string.Empty;
+			hiddenEmoji = hiddenEmoji
+			.Select(a => a.Replace(hiddenEmoji[buttonIndex], "?"))
+			.ToList();
 
-			Task.Delay(1000).ContinueWith(t => animalDisappear()); // After 1 second make the buttonName disappear. (C)
+			hiddenEmoji = hiddenEmoji
+				.Select(a => a.Replace(hiddenEmoji[lastButtonIndex], "?"))
+				.ToList();
+
+			lastAnimalFound = string.Empty;
+			lastButtonIndex = -1;
+
+			//Task.Delay(1000).ContinueWith(t => animalHidden()); // After 1 second make the buttonName disappear. (C)
 
 			if (animalDescription != lastDescription) // this statement is added to make sure the score does not reduce, if the same button is clicked again.
 			{
@@ -276,7 +290,10 @@ using System.Timers;
 		{ "🐷", "🐷" },{ "🦊", "🦊" },
 		{ "🐗", "🐗" },{ "🦝", "🦝" },
 		{ "🦎", "🦎" },{ "🐠", "🐠" },
-		{ "🐰", "🐰" },{ "🦄", "🦄" }
+		{ "🐰", "🐰" },{ "🦄"
+		 
+		 
+		 , "🦄" }
 	};
 
 	List<string> animalEmoji = string.Empty; // create an empty List (B)
