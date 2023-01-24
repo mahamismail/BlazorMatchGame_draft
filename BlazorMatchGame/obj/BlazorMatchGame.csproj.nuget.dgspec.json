@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\NEU\\Intermediate Programming\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj": {}
+    "D:\\NEU\\Intermediate Programming\\Week 1\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj": {}
   },
   "projects": {
-    "D:\\NEU\\Intermediate Programming\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj": {
+    "D:\\NEU\\Intermediate Programming\\Week 1\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\NEU\\Intermediate Programming\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj",
+        "projectUniqueName": "D:\\NEU\\Intermediate Programming\\Week 1\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj",
         "projectName": "BlazorMatchGame",
-        "projectPath": "D:\\NEU\\Intermediate Programming\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj",
+        "projectPath": "D:\\NEU\\Intermediate Programming\\Week 1\\BlazorMatchGame_draft\\BlazorMatchGame\\BlazorMatchGame.csproj",
         "packagesPath": "C:\\Users\\maham\\.nuget\\packages\\",
-        "outputPath": "D:\\NEU\\Intermediate Programming\\BlazorMatchGame_draft\\BlazorMatchGame\\obj\\",
+        "outputPath": "D:\\NEU\\Intermediate Programming\\Week 1\\BlazorMatchGame_draft\\BlazorMatchGame\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\maham\\AppData\\Roaming\\NuGet\\NuGet.Config",

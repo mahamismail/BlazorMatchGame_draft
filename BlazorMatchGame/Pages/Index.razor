@@ -2,8 +2,19 @@
 @using System.Timers
 
 <style>
-	.container {
+
+	h2 {
+		padding: 5px;
+	}
+
+	.row {
+		justify-content: center;
+	}
+
+	.game {
 		width: 400px;
+		margin: auto;
+		padding: 10px;
 	}
 
 	.circularbtn {
@@ -14,65 +25,91 @@
 		border-radius: 200px;
 		background-color: #EDE8E8;
 	}
-</style>
 
-<div class="container">
+	.database {
+		width: 800px;
+		margin: auto;
+		position: center;
+		padding: 10px;
+	}
+
+	.selected {
+		background-color: black;
+	}
+
+</style>
+<!--- First div to display Animal Database---->
+<div class="database">
 	<div class="row">
 		<h2>Choose 8 animals:</h2>
 	</div>
 	<div class="row">
+		<!--- loop through all animal emojis in the database---->
 		@for (var allAnim = 0; allAnim < animalDatabase.Count; allAnim++)
 		{
+			<!--- create a variable for each Animal in the database List---->
 			var uniqueAnimalsToAdd = animalDatabase[allAnim];
-			<div class="col-3">
-				<button @onclick="@(() => pushAnimalToList(uniqueAnimalsToAdd))"
-						type="button" class="btn">
-					<h1>@animalDatabase[allAnim]</h1>
-				</button>
-			</div>
+			<!--- store the index of each animal in a variable---->
+			var uniqueDBIndex = allAnim;
+
+		<div class="col-1">
+			<!--- on click, push the clicked animal in the AnimalEmoji list for the game---->
+			<!----Tried my best here to add a class for the div that could highlights the chosen animal, but was unable to do so-->
+			<button @onclick="@(() => pushAnimalToList(uniqueAnimalsToAdd, uniqueDBIndex))"
+					type="button" class="btn">
+				<h1>@animalDatabase[allAnim]</h1>
+			</button>
+		</div>
 		}
 	</div>
-	<div class="row">
+	<div class="row" style="padding:50px">
+		<!--- on click, set up the game---->
 		<button @onclick="@(() => SetUpGame())"
-				type="button" class="btn btn-success">
-			<h1>Play</h1>
+				type="button" class="btn btn-dark">
+			<h4>Create Game</h4>
+		</button>
+		<button @onclick="@(() => unselectAll())"
+				type="button" class="btn btn-link">
+			<h5 style="padding:0 0 0 100px">Reset Animals</h5>
 		</button>
 	</div>
+</div>
+<!--- Second div to display the Game once SetUpGame is called---->
+<div class="game">
 	<div class="row">
-		<h2>Time:@timeDisplay</h2>
-	</div>
-	<div class="row">
+		<!--- loop through all chosen animals in the new and shuffled list---->
 		@for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
 		{
+			<!--- create a variable for each animal in the list---->
 			var animal = shuffledAnimals[animalNumber];
 			var uniqueDescription = $"Button #{animalNumber}";
+			<!--- store the index of each animal in a variable---->
 			var uniqueButtonIndex = animalNumber;
 
 			<div class="col-3">
 				<button @onclick="@(() => ButtonClick(animal, uniqueDescription, uniqueButtonIndex))"
 						type="button" class="circularbtn">
+					<!---display only question marks from the hiddenEmoji list---->
 					<h1>@hiddenEmoji[uniqueButtonIndex]</h1>
 				</button>
 			</div>
 		}
 	</div>
 	<div class="row">
-		<h2>Matches found: @matchesFound</h2>
+		<h3 style= "padding:20px">Matches: @matchesFound</h3>
+		<h3 style= "padding:20px">Score: @scoreDisplay</h3> 
 	</div>
-	<div class="row">
-		<h2>Score: @scoreDisplay</h2>
-	</div>
-	<div class="row">
-		<button @onclick="@(() => SetUpGame())"
-				type="button" class="btn btn-success">
-			<h1>Reset Game</h1>
-		</button>
+	<div class="row" style= "color: #dc3545">
+		<h2 >@timeDisplay</h2>
 	</div>
 </div>
 
 @code {
+	/*****for TASK B ✅
+	Provide multiple options of animal emoji so the player can choose 
+	8 animals and then start the game with them */
 
-	List<string> animalDatabase = new List<string>()
+	List<string> mainAnimalDatabase = new List<string>() //create a database with 24 options of animal emojis (B)
 	{
 		"🐶", "🐺",
 		"🐱", "🐼",
@@ -81,31 +118,55 @@
 		"🐷", "🦊",
 		"🐗", "🦝",
 		"🦎", "🐠",
-		"🐰", "🦄"
+		"🐰", "🦄",
+		"🐜", "🦋",
+		"🐌", "🦩",
+		"🦜", "🦢",
+		"🐥", "🦈",
 	};
 
-	List<string> animalEmoji = new List<string>();
-
-	private void pushAnimalToList(string animalToAdd)
+	protected override void OnInitialized() // when the webpage loads do this
 	{
-		if (animalEmoji.Count < 16)
-		{
-			animalEmoji.Add(animalToAdd);
-			animalEmoji.Add(animalToAdd);
-		}
-
-	}
-
-	protected override void OnInitialized()
-	{
+		animalDatabase = mainAnimalDatabase.ToList();
 		timer = new Timer(100);
 		timer.Elapsed += Timer_Tick;
 	}
 
+
+	//Strings for animals
+	List<string> animalDatabase = new List<string>(); // temporary string to store animal database
+	List<string> animalEmoji = new List<string>(); //create an empty list of string in which the chosen animals can be pushed (B)
+
+
+	private void pushAnimalToList(string animalToAdd, int DBIndex) // This function is called everytime the player clicks on a animal(B)
+	{
+		if (animalEmoji.Count < 16) // player can not choose on more than 8 animals (B)
+		{
+			animalEmoji.Add(animalToAdd);
+			animalEmoji.Add(animalToAdd); // one chosen animal pushed twice to have pairs for the game. (B)
+			animalDatabase[DBIndex] = ""; // to make sure the same animal is not clicked twice, the animal is removed on click. (B)
+		}
+	}
+
+	private void unselectAll() // reset the chosen animals. This was an additional think I added along with Task B to make it replayable. However it has a bug and haven't figure out how to solve it (B)
+	{
+		animalDatabase.Clear(); // clears the temporary database string.
+		animalDatabase = mainAnimalDatabase.ToList(); // fill the temporary database string with animals again
+		animalEmoji.Clear();
+		shuffledAnimals.Clear();// clear 
+		timer.Stop(); // stop the timer
+	}
+
+
 	List<string> shuffledAnimals = new List<string>();
 
-	List<string> hiddenEmoji = new List<string>()
-{
+	/****** For TASK C ✅
+	Memory Game: The buttons begin with ?. On click button is visible and remains open until the next one is checked.
+	If the next button matches, both buttons should stay open for 1 second then emptied out.
+	If next button is incorrect, they go back to ?. */
+
+	List<string> hiddenEmoji = new List<string>() // Make a list with ? Emoji. (C)
+	{
 		"❔", "❔",
 		"❔", "❔",
 		"❔", "❔",
@@ -119,41 +180,50 @@
 	private void SetUpGame()
 	{
 
-		Random random = new Random();
+		Random random = new Random(); // randomize the positions of all animals on the list.
 		shuffledAnimals = animalEmoji
 			.OrderBy(item => random.Next())
 			.ToList();
 
 		matchesFound = 0; // reset matches to zero (A)
 
-		tenthOfSecondsElapsed = 0;
+		tenthOfSecondsElapsed = 0; // reset time
 
 		for (var i = 0; i < hiddenEmoji.Count; i++)
 		{
-			hiddenEmoji[i] = "❔";
+			hiddenEmoji[i] = "❔"; // this is to make sure all animals are "❔" when beginning the game. (C)
 		}
 	}
 
-	string lastAnimalFound = string.Empty;
+	/***** 
+	*	
+	*
+	THE MAIN GAME SETUP 
+	*
+	*
+	*****/
+
+	string lastAnimalFound = string.Empty; // variable to keep track of previous animal clicked
 	string lastDescription = string.Empty;
 	int lastButtonIndex;
 	int matchesFound = 0;
 	Timer timer;
 	int tenthOfSecondsElapsed = 0;
 	string timeDisplay;
-	int scoreDisplay = 0; // created to track score of the matches successfully made. (A)
 
-	// if lastAnimalFound is " ", then buttonIndex is animal.
-	// if matchIsSucces, then lastButtonIndex and buttonIndex is " "
-	// if false, then lastButtonIndex and buttonIndex is "?"
+	/***** for TASK A ✅
+	Change the game so that the player scores 10 point for every correct match and loses 2 points for every wrong match
+	*****/
+	int scoreDisplay = 0; // created to track score of the matches successfully made. (A)
 
 	private void hideAnimalsAgain(int buttonIndex, int lastButtonIndex)
 	{
-		hiddenEmoji[buttonIndex] = "❔";
-		hiddenEmoji[lastButtonIndex] = "❔";
+		hiddenEmoji[buttonIndex] = "❔"; //(C)
+		hiddenEmoji[lastButtonIndex] = "❔"; //(C)
 	}
 
-	private void removeAnimals(int buttonIndex, int lastButtonIndex) {
+	private void removeAnimals(int buttonIndex, int lastButtonIndex)
+	{
 
 		shuffledAnimals[buttonIndex] = string.Empty;
 		shuffledAnimals[lastButtonIndex] = string.Empty;
@@ -168,6 +238,8 @@
 
 		if (lastAnimalFound == string.Empty) // first click
 		{
+			// if lastAnimalFound is " ", then buttonIndex is animal. (C)
+
 			hiddenEmoji[buttonIndex] = animal;
 
 			lastAnimalFound = animal;
@@ -179,11 +251,10 @@
 		}
 		else if ((lastAnimalFound == animal) && (animalDescription != lastDescription)) // if second click and it matches the first
 		{
-			hiddenEmoji[buttonIndex] = animal;
-			Task.Delay(1000).ContinueWith(t => removeAnimals(buttonIndex, lastButtonIndex)); // After 1 second make the buttonName disappear. (C)
+			hiddenEmoji[buttonIndex] = animal; // display the animal
+			Task.Delay(1000).ContinueWith(t => removeAnimals(buttonIndex, lastButtonIndex)); // After 1 second remove the correct animals. (C)
 
 			lastAnimalFound = string.Empty;
-			//lastButtonIndex = -1;
 
 			matchesFound++;
 			scoreDisplay = scoreDisplay + 10; // add to the score by 1 on correct match (A)
@@ -191,7 +262,7 @@
 			if (matchesFound == 8) // if matches found amount to 8, the timer stops and game is reset.
 			{
 				timer.Stop();
-				timeDisplay += " - Play Again?";
+				timeDisplay += " - Good Job!";
 				SetUpGame();
 			}
 
@@ -206,7 +277,7 @@
 
 			if (animalDescription != lastDescription) // this statement is added to make sure the score does not reduce, if the same button is clicked again.
 			{
-				scoreDisplay = scoreDisplay -2; // reduce the score by 1 for incorrect match (A)
+				scoreDisplay = scoreDisplay - 2; // reduce the score by 1 for incorrect match (A)
 			}
 		}
 	}
@@ -221,83 +292,6 @@
 			StateHasChanged();
 		});
 	}
-
-
-	/*****
-	--------------------for TASK A ✅------------------------------------------- 
-	Change the game so that the player scores 1 point for every correct match and loses 1 point for every wrong match
-
-	1) Add a integer scoreDisplay variable with initial value of 0. ✅
-	2) Add scoreDisplay ++ when lastAnimalFound == animal ✅
-	3) Add scoreDisplay -- when lastAnimalFound != animal ✅
-	3) Also make sure clicking on the same button does not decrease scoreDisplay. Add an if statement so 
-	that score decreases only when animalDescription != lastDescription. ✅
-	4) Display this in html and add @scoreDisplay. ✅
-
-	BUG
-	When the player gets something wrong, the button they last clicked on does not get unselected. 
-	So people may mess this up.
-
-	- In HTML, unselect button after lastAnimalFound != animal.
-	- Make it +10 points for one correct match.
-	- Make it -2 points for one incorrect match. 
-
-	*****/
-
-
-
-	/*****
-	----------------------for TASK B-----------------------------------------
-	Give multiple options of animals so the player can choose upto 8 animals to use
-	in the game.
-
-	1) Create a list called animalEmojiDatabase that contains 20 animals or more.
-	2) Make each animal a button.
-	3) On click, the animal gets highlighted and is selected.
-	4) When 8 animals emojis have been clicked on and selected, the player cannot click on more.
-	5) Click on a Selected animal emoji to Unselect it. 
-	6) On clicking GO, setUpGame() is called.
-	7) All selected animals emojis from animalEmojiDatabase are pushed twice each into the animalEmoji list.
-
-	--------POSSIBLE CODE:-------------
-	string[,] animalDatabase = new string[,] // this creates a 2D array with all 16 animal choices (B)
-	{ 
-		{ "🐶", "🐶" },{ "🐺", "🐺" }, 
-		{ "🐱", "🐱" },{ "🐼", "🐼" }, 
-		{ "🐻", "🐻" },{ "🐮", "🐮" },
-		{ "🐯", "🐯" },{ "🐹", "🐹" },
-		{ "🐷", "🐷" },{ "🦊", "🦊" },
-		{ "🐗", "🐗" },{ "🦝", "🦝" },
-		{ "🦎", "🦎" },{ "🐠", "🐠" },
-		{ "🐰", "🐰" },{ "🦄", "🦄" }
-	};
-
-	List<string> animalEmoji = string.Empty; // create an empty List (B)
-
-	// Push the selected 8 animals from the animalDatabase into the animalEmoji list. (B)
-	But this needs to be PUSHED in a way that it is converted into a 1D Array/List.
-
-	******/
-
-
-
-	/******
-	------------------------- For TASK C ✅---------------------------------
-	Memory Game: The buttons begin empty. On click button is visible and remains open until the next one is checked. 
-	If the next button matches, both buttons should stay open (and maybe turn green/black).
-	If next button is incorrect, both buttons become invisible in one second.
-
-	1) Make variables for button index to look through hidden list and animal list ✅
-	2) Variable starts as an empty string ✅
-	3) In the button click function, the animal is placed in the variable. ✅ bug
-	4) After a delay of 1 second, call a function that makes the variable empty again ✅ bug
-	4) If lastAnimalFound == animal, then the variable stays visible. 
-	5) If lastAnimalFound != animal, then the variable goes back to empty. ✅
-
-	BUGS:
-	On click, all buttons display the clicked button's animal.
-
-	*******/
 
 }
 

@@ -98,14 +98,14 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 107 "D:\NEU\Intermediate Programming\Week 1\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
+#line 104 "D:\NEU\Intermediate Programming\Week 1\BlazorMatchGame_draft\BlazorMatchGame\Pages\Index.razor"
        
 	/*****for TASK B ✅
 	Provide multiple options of animal emoji so the player can choose 
 	8 animals and then start the game with them */
 
-	List<string> mainAnimalDatabase = new List<string>() //create a database with 24 options of animal emojis (B)
-	{
+	List<string> animalDatabase = new List<string>() //create a database with 24 options of animal emojis (B)
+{
 		"🐶", "🐺",
 		"🐱", "🐼",
 		"🐻", "🐮",
@@ -120,16 +120,6 @@ using System.Timers;
 		"🐥", "🦈",
 	};
 
-	protected override void OnInitialized() // when the webpage loads do this
-	{
-		animalDatabase = mainAnimalDatabase.ToList();
-		timer = new Timer(100);
-		timer.Elapsed += Timer_Tick;
-	}
-
-
-	//Strings for animals
-	List<string> animalDatabase = new List<string>(); // temporary string to store animal database
 	List<string> animalEmoji = new List<string>(); //create an empty list of string in which the chosen animals can be pushed (B)
 
 
@@ -139,19 +129,16 @@ using System.Timers;
 		{
 			animalEmoji.Add(animalToAdd);
 			animalEmoji.Add(animalToAdd); // one chosen animal pushed twice to have pairs for the game. (B)
+
 			animalDatabase[DBIndex] = ""; // to make sure the same animal is not clicked twice, the animal is removed on click. (B)
 		}
 	}
 
-	private void unselectAll() // reset the chosen animals. This was an additional think I added along with Task B to make it replayable. However it has a bug and haven't figure out how to solve it (B)
+	protected override void OnInitialized()
 	{
-		animalDatabase.Clear(); // clears the temporary database string.
-		animalDatabase = mainAnimalDatabase.ToList(); // fill the temporary database string with animals again
-		animalEmoji.Clear();
-		shuffledAnimals.Clear();// clear 
-		timer.Stop(); // stop the timer
+		timer = new Timer(100);
+		timer.Elapsed += Timer_Tick;
 	}
-
 
 	List<string> shuffledAnimals = new List<string>();
 
@@ -160,8 +147,8 @@ using System.Timers;
 	If the next button matches, both buttons should stay open for 1 second then emptied out.
 	If next button is incorrect, they go back to ?. */
 
-	List<string> hiddenEmoji = new List<string>() // Make a list with ? Emoji. (C)
-	{
+	List<string> hiddenEmoji = new List<string>() // Make a list with ? Emoji.
+{
 		"❔", "❔",
 		"❔", "❔",
 		"❔", "❔",
@@ -186,7 +173,7 @@ using System.Timers;
 
 		for (var i = 0; i < hiddenEmoji.Count; i++)
 		{
-			hiddenEmoji[i] = "❔"; // this is to make sure all animals are "❔" when beginning the game. (C)
+			hiddenEmoji[i] = "❔"; // this is to make sure all animals are "❔" when beginning the game.
 		}
 	}
 
@@ -205,8 +192,8 @@ using System.Timers;
 
 	private void hideAnimalsAgain(int buttonIndex, int lastButtonIndex)
 	{
-		hiddenEmoji[buttonIndex] = "❔"; //(C)
-		hiddenEmoji[lastButtonIndex] = "❔"; //(C)
+		hiddenEmoji[buttonIndex] = "❔";
+		hiddenEmoji[lastButtonIndex] = "❔";
 	}
 
 	private void removeAnimals(int buttonIndex, int lastButtonIndex)
@@ -249,7 +236,7 @@ using System.Timers;
 			if (matchesFound == 8) // if matches found amount to 8, the timer stops and game is reset.
 			{
 				timer.Stop();
-				timeDisplay += " - Good Job!";
+				timeDisplay += " - Play Again?";
 				SetUpGame();
 			}
 
@@ -280,6 +267,11 @@ using System.Timers;
 		});
 	}
 
+
+
+	
+
+	
 
 #line default
 #line hidden
