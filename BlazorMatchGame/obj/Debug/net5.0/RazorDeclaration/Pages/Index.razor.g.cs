@@ -174,7 +174,7 @@ using System.Timers;
 
 	private void SetUpGame()
 	{
-
+		scoreDisplay = 0;
 		Random random = new Random(); // randomize the positions of all animals on the list.
 		shuffledAnimals = animalEmoji
 			.OrderBy(item => random.Next())
@@ -189,6 +189,14 @@ using System.Timers;
 			hiddenEmoji[i] = "❔"; // this is to make sure all animals are "❔" when beginning the game. (C)
 		}
 	}
+
+	/***** 
+	*	
+	*
+	THE MAIN GAME SETUP 
+	*
+	*
+	*****/
 
 	string lastAnimalFound = string.Empty; // variable to keep track of previous animal clicked
 	string lastDescription = string.Empty;

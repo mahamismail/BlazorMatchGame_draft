@@ -179,7 +179,7 @@
 
 	private void SetUpGame()
 	{
-
+		scoreDisplay = 0;
 		Random random = new Random(); // randomize the positions of all animals on the list.
 		shuffledAnimals = animalEmoji
 			.OrderBy(item => random.Next())
